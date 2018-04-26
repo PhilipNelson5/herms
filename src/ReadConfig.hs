@@ -7,12 +7,13 @@ import Data.Typeable
 import Data.Char (toLower)
 import Data.List.Split
 import Lang.Pirate
+import Lang.Portuguese
 import Paths_herms
 
 ------------------------------
 ------- Config Types ---------
 ------------------------------
-  
+
 -- TODO Allow record synonyms with that fancy stuff
 
 data ConfigInfo = ConfigInfo
@@ -27,7 +28,7 @@ data Config = Config
   , defaultServingSize' :: Int
   , recipesFile'        :: String
   , translator          :: String -> String
-  } 
+  }
 
 data Language = English
               | Pirate
@@ -39,7 +40,7 @@ type Translator = String -> String
 ---- Exception Handling ------
 ------------------------------
 
-data ConfigParseError = ConfigParseError 
+data ConfigParseError = ConfigParseError
   deriving Typeable
 
 instance Show ConfigParseError where
@@ -74,7 +75,7 @@ portugueseSyns = [ "portuguese"
 getLang :: ConfigInfo -> Language
 getLang c
   | isIn englishSyns = English
-  -- | isIn portugueseSyns = Portuguese
+  | isIn portugueseSyns = Portuguese
   | isIn pirateSyns  = Pirate
   where isIn = elem (map toLower $ language c)
 
@@ -82,6 +83,7 @@ getTranslator :: Language -> Translator
 getTranslator lang = case lang of
                        English -> id :: String -> String
                        Pirate  -> pirate
+                       Portuguese  -> portuguese
 
 dropComments :: String -> String
 dropComments = unlines . map (head . splitOn "--") . lines
